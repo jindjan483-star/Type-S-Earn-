@@ -1,0 +1,4320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type & Earn - Work From Home</title>
+
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            color: #333;
+        }
+
+        /* Auth Container */
+        #auth-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f5132, #198754);
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .auth-card h2 {
+            text-align: center;
+            margin-bottom: 5px;
+            color: #198754;
+        }
+
+        .auth-card p.subtitle {
+            text-align: center;
+            font-size: 13px;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #198754;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background: #198754;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #157347;
+        }
+
+        .switch-auth {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .switch-auth a {
+            color: #198754;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* App Layout */
+        #app-section {
+            display: none;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #fff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-toggle {
+            font-size: 22px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .brand-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #198754;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #198754;
+            font-weight: 600;
+            border: 2px solid #198754;
+            cursor: pointer;
+        }
+
+        /* Sidebar Drawer */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100%;
+            background: #fff;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #0f5132, #198754);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 15px 0;
+        }
+
+        .sidebar-menu li {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            font-size: 15px;
+            color: #495057;
+            border-left: 4px solid transparent;
+            transition: 0.2s;
+        }
+
+        .sidebar-menu li:hover,
+        .sidebar-menu li.active {
+            background: #f8f9fa;
+            color: #198754;
+            border-left-color: #198754;
+        }
+
+        .sidebar-menu li i {
+            width: 20px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 900;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* Main Container */
+        .main-container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .view-section {
+            display: none;
+            animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard Cards */
+        .welcome-box {
+            background: linear-gradient(135deg, #0f5132, #198754);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(25, 135, 84, 0.2);
+        }
+
+        .welcome-box h3 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .welcome-box p {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .btn-ref {
+            background: white;
+            color: #198754;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-ref:active {
+            transform: scale(0.96);
+        }
+
+        .stat-card {
+            padding: 20px;
+            border-radius: 12px;
+            color: white;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .bg-balance {
+            background: linear-gradient(135deg, #198754, #20c997);
+        }
+
+        .bg-withdraw {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+            color: #fff;
+        }
+
+        .bg-team {
+            background: linear-gradient(135deg, #6c757d, #495057);
+        }
+
+        .stat-card h4 {
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .stat-card h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .stat-card i {
+            font-size: 32px;
+            opacity: 0.8;
+        }
+
+        /* Income Breakdown */
+        .breakdown-section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #198754;
+            margin: 25px 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .breakdown-card {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border-left: 5px solid #198754;
+        }
+
+        .breakdown-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .breakdown-info i {
+            font-size: 20px;
+            color: #198754;
+            background: #e8f5e9;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .breakdown-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .breakdown-amount {
+            font-size: 16px;
+            font-weight: 700;
+            color: #198754;
+        }
+
+        /* Excel */
+        .reference-box {
+            background: #e8f5e9;
+            border: 1px dashed #198754;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            line-height: 1.6;
+            max-height: 150px;
+            overflow-y: auto;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .reference-box strong {
+            color: #0f5132;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .excel-table-container {
+            overflow-x: auto;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            max-height: 280px;
+        }
+
+        .excel-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: left;
+        }
+
+        .excel-table th,
+        .excel-table td {
+            border: 1px solid #dee2e6;
+            padding: 8px 10px;
+        }
+
+        .excel-table th {
+            background: #198754;
+            color: white;
+            font-weight: 600;
+        }
+
+        .excel-input-cell {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 13px;
+        }
+
+        /* Check-in */
+        .checkin-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .checkin-box {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .checkin-box.claimed {
+            background: #d1e7dd;
+            border-color: #198754;
+            color: #0f5132;
+        }
+
+        .checkin-box.locked {
+            opacity: 0.6;
+            background: #f8f9fa;
+            cursor: not-allowed;
+        }
+
+        .checkin-box h5 {
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .checkin-box p {
+            font-size: 12px;
+            font-weight: 600;
+            color: #198754;
+        }
+
+        /* Badges */
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .badge-box {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+
+        .badge-box i {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .badge-box h5 {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .badge-box p {
+            font-size: 11px;
+            color: #6c757d;
+        }
+
+        /* Support */
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .support-btn {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            font-weight: 500;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .support-btn i {
+            font-size: 24px;
+            color: #198754;
+        }
+
+        .support-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Task Cards */
+        .task-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task-info h4 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .task-info p {
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .task-price {
+            font-weight: 700;
+            color: #198754;
+            font-size: 16px;
+            margin-bottom: 8px;
+            text-align: right;
+        }
+
+        .btn-start {
+            background: #198754;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        /* Workspace */
+        .workspace-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .workspace-box h3 {
+            margin-bottom: 15px;
+            color: #198754;
+        }
+
+        /* History */
+        .history-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .badge-pending {
+            background: #fff3cd;
+            color: #664d03;
+        }
+
+        .badge-danger {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        /* Wallet */
+        .withdraw-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .warning-box {
+            background: #f8d7da;
+            color: #842029;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #f5c2c7;
+            line-height: 1.5;
+        }
+
+        /* Donation */
+        .donation-hero {
+            background: linear-gradient(135deg, #0f5132, #198754);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            line-height: 1.7;
+            box-shadow: 0 4px 12px rgba(25,135,84,0.18);
+        }
+
+        .donation-hero h4 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .donation-info {
+            background: #e8f5e9;
+            border-left: 5px solid #198754;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .donation-info strong {
+            color: #0f5132;
+        }
+
+        .donation-balance {
+            background: #f8f9fa;
+            border: 1px solid #e1e5e8;
+            padding: 13px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .donation-balance strong {
+            color: #198754;
+            font-size: 16px;
+        }
+
+        .donation-note {
+            text-align: center;
+            color: #6c757d;
+            font-size: 12px;
+            line-height: 1.6;
+            margin-top: 12px;
+        }
+
+        .alert-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #198754;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 2000;
+            display: none;
+            font-size: 14px;
+            animation: fadeIn 0.3s;
+        }
+
+        /* Custom Beautiful Modal Overlay */
+        #custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(2px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .custom-modal-box {
+            background: #fff;
+            width: 90%;
+            max-width: 350px;
+            padding: 25px 20px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .custom-modal-icon {
+            font-size: 45px;
+            color: #198754;
+            margin-bottom: 12px;
+        }
+
+        .custom-modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .custom-modal-message {
+            font-size: 14px;
+            color: #6c757d;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            white-space: pre-line;
+        }
+
+        .custom-modal-btn {
+            background: #198754;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .custom-modal-btn:hover {
+            background: #157347;
+        }
+
+        @media (max-width: 600px) {
+            .task-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .task-price {
+                text-align: left;
+            }
+
+            .support-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .checkin-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- CUSTOM BEAUTIFUL MODAL -->
+    <div id="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <div class="custom-modal-icon" id="modal-icon">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="custom-modal-title" id="modal-title">Type & Earn</div>
+            <div class="custom-modal-message" id="modal-message">Message here...</div>
+            <button class="custom-modal-btn" onclick="closeCustomModal()">OK</button>
+        </div>
+    </div>
+
+
+    <!-- AUTH SECTION -->
+    <div id="auth-section">
+
+        <!-- LOGIN -->
+        <div class="auth-card" id="login-card">
+            <h2>Type & Earn</h2>
+            <p class="subtitle">Work From Home - Type & Earn</p>
+
+            <div class="form-group">
+                <label>Mobile Number</label>
+                <input type="text" id="login-phone" placeholder="Enter registered mobile">
+            </div>
+
+            <div class="form-group">
+                <label>Email ID</label>
+                <input type="email" id="login-email" placeholder="Enter registered email">
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="login-password" placeholder="Enter your password">
+            </div>
+
+            <button class="btn-primary" onclick="handleLogin()">Login Now</button>
+
+            <div class="switch-auth">
+                Don't have an account?
+                <a href="#" onclick="toggleAuth(true)">Sign Up</a>
+            </div>
+        </div>
+
+        <!-- SIGNUP -->
+        <div class="auth-card" id="signup-card" style="display: none;">
+            <h2>Type & Earn</h2>
+            <p class="subtitle">Create Account & Start Earning</p>
+
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="su-name" placeholder="Enter name">
+            </div>
+
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="su-username" placeholder="Choose username">
+            </div>
+
+            <div class="form-group">
+                <label>Mobile Number</label>
+                <input type="text" id="su-phone" placeholder="Enter mobile number">
+            </div>
+
+            <div class="form-group">
+                <label>Email ID</label>
+                <input type="email" id="su-email" placeholder="Enter email">
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="su-password" placeholder="Create secure password">
+            </div>
+
+            <button class="btn-primary" onclick="handleSignup()">Register & Start</button>
+
+            <div class="switch-auth">
+                Already have an account?
+                <a href="#" onclick="toggleAuth(false)">Login</a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MAIN APP -->
+    <div id="app-section">
+
+        <header>
+            <div class="logo-area">
+                <i class="fa-solid fa-bars menu-toggle" onclick="toggleSidebar()"></i>
+                <span class="brand-title">Type & Earn</span>
+            </div>
+
+            <div class="user-avatar"
+                 onclick="switchView('profile-view')"
+                 id="header-avatar">
+                U
+            </div>
+        </header>
+
+
+        <!-- SIDEBAR -->
+        <div class="sidebar" id="sidebar">
+
+            <div class="sidebar-header">
+                <h3>Menu</h3>
+                <i class="fa-solid fa-xmark"
+                   style="cursor: pointer; font-size: 20px;"
+                   onclick="toggleSidebar()"></i>
+            </div>
+
+            <ul class="sidebar-menu">
+
+                <li onclick="switchView('home-view'); toggleSidebar();" class="active">
+                    <i class="fa-solid fa-house"></i>
+                    Home Dashboard
+                </li>
+
+                <li onclick="switchView('tasks-view'); toggleSidebar();">
+                    <i class="fa-solid fa-clipboard-list"></i>
+                    Data Entry & PDF Tasks
+                </li>
+
+                <li onclick="switchView('verification-view'); toggleSidebar();">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                    Task Verification
+                </li>
+
+                <!-- PROMO CODE MENU -->
+                <li onclick="switchView('code-view'); toggleSidebar();">
+                    <i class="fa-solid fa-ticket"></i>
+                    Code
+                </li>
+
+                <li onclick="switchView('checkin-view'); toggleSidebar();">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    Daily Check-in & Badges
+                </li>
+
+                <li onclick="switchView('wallet-view'); toggleSidebar();">
+                    <i class="fa-solid fa-wallet"></i>
+                    My Wallet & Withdraw
+                </li>
+
+                <li onclick="switchView('history-view'); toggleSidebar();">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    Task History
+                </li>
+
+                <li onclick="switchView('withdraw-history-view'); toggleSidebar();">
+                    <i class="fa-solid fa-money-bill-transfer"></i>
+                    Withdrawal History
+                </li>
+
+                <li onclick="switchView('refer-view'); toggleSidebar();">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Refer & Earn
+                </li>
+
+                <!-- DONATION MENU -->
+                <li onclick="switchView('donation-view'); toggleSidebar();">
+                    <i class="fa-solid fa-hand-holding-heart"></i>
+                    Donation
+                </li>
+
+                <!-- MY DONATION MENU -->
+                <li onclick="switchView('my-donation-view'); toggleSidebar();">
+                    <i class="fa-solid fa-list-check"></i>
+                    My Donation
+                </li>
+
+                <li onclick="switchView('profile-view'); toggleSidebar();">
+                    <i class="fa-solid fa-user-pen"></i>
+                    Edit Profile
+                </li>
+
+                <li onclick="switchView('support-view'); toggleSidebar();">
+                    <i class="fa-solid fa-headset"></i>
+                    Help & Support
+                </li>
+
+                <li onclick="logout()">
+                    <i class="fa-solid fa-power-off"></i>
+                    Logout
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="overlay"
+             id="overlay"
+             onclick="toggleSidebar()"></div>
+
+
+        <!-- APP CONTENT -->
+        <div class="main-container">
+
+            <!-- HOME VIEW -->
+            <div id="home-view" class="view-section active">
+
+                <div class="welcome-box">
+                    <h3 id="welcome-name">Welcome, User</h3>
+
+                    <p>
+                        ID:
+                        <span id="user-display-id">SEP8683466</span>
+                    </p>
+
+                    <button class="btn-ref" onclick="copyReferralLink()">
+                        <i class="fa-solid fa-share-nodes"></i>
+                        Copy Referral Link
+                    </button>
+                </div>
+
+
+                <div class="stat-card bg-balance">
+                    <div>
+                        <h4>My Balance</h4>
+                        <h2>
+                            ₹ <span id="lbl-balance">149</span>
+                        </h2>
+                    </div>
+
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
+
+
+                <div class="stat-card bg-withdraw">
+                    <div>
+                        <h4>Total Withdrawn</h4>
+                        <h2>
+                            ₹ <span id="lbl-withdrawn">0</span>
+                        </h2>
+                    </div>
+
+                    <i class="fa-solid fa-money-bills"></i>
+                </div>
+
+
+                <div class="stat-card bg-team">
+                    <div>
+                        <h4>Total Team / Referrals</h4>
+                        <h2>
+                            <span id="lbl-team">0</span> Users
+                        </h2>
+                    </div>
+
+                    <i class="fa-solid fa-users"></i>
+                </div>
+
+
+                <!-- INCOME BREAKDOWN -->
+                <div class="breakdown-section-title">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    Income Breakdown
+                </div>
+
+
+                <div class="breakdown-card">
+                    <div class="breakdown-info">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        <span class="breakdown-title">Login Income</span>
+                    </div>
+
+                    <span class="breakdown-amount">
+                        ₹ <span id="bk-login">149</span>
+                    </span>
+                </div>
+
+
+                <div class="breakdown-card">
+                    <div class="breakdown-info">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span class="breakdown-title">Referral Income</span>
+                    </div>
+
+                    <span class="breakdown-amount">
+                        ₹ <span id="bk-referral">0</span>
+                    </span>
+                </div>
+
+
+                <div class="breakdown-card">
+                    <div class="breakdown-info">
+                        <i class="fa-solid fa-keyboard"></i>
+                        <span class="breakdown-title">Excel Data Entry</span>
+                    </div>
+
+                    <span class="breakdown-amount">
+                        ₹ <span id="bk-excel">0</span>
+                    </span>
+                </div>
+
+
+                <div class="breakdown-card">
+                    <div class="breakdown-info">
+                        <i class="fa-solid fa-file-pen"></i>
+                        <span class="breakdown-title">Handwriting Transcription Task</span>
+                    </div>
+
+                    <span class="breakdown-amount">
+                        ₹ <span id="bk-handwriting">0</span>
+                    </span>
+                </div>
+
+
+                <div class="breakdown-card">
+                    <div class="breakdown-info">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        <span class="breakdown-title">PDF Task</span>
+                    </div>
+
+                    <span class="breakdown-amount">
+                        ₹ <span id="bk-pdf">0</span>
+                    </span>
+                </div>
+
+
+                <div class="breakdown-card">
+                    <div class="breakdown-info">
+                        <i class="fa-solid fa-gift"></i>
+                        <span class="breakdown-title">Reward Income (Check-in)</span>
+                    </div>
+
+                    <span class="breakdown-amount">
+                        ₹ <span id="bk-rewards">0</span>
+                    </span>
+                </div>
+
+
+                <h3 style="margin: 25px 0 10px 0; font-size: 16px;">
+                    Quick Support Channels
+                </h3>
+
+                <div class="support-grid">
+
+                    <a href="tel:8860169304" class="support-btn">
+                        <i class="fa-solid fa-phone-volume"></i>
+                        Call Support
+                    </a>
+
+                    <a href="https://wa.me/918860169304"
+                       target="_blank"
+                       class="support-btn">
+
+                        <i class="fa-brands fa-whatsapp"
+                           style="color: #25d366;"></i>
+
+                        WhatsApp Chat
+                    </a>
+
+                    <a href="mailto:faizanvlogs887@gmail.com"
+                       class="support-btn">
+
+                        <i class="fa-solid fa-envelope"
+                           style="color: #dc3545;"></i>
+
+                        Email Support
+                    </a>
+
+                    <a href="#"
+                       onclick="switchView('tasks-view')"
+                       class="support-btn">
+
+                        <i class="fa-solid fa-file-pen"></i>
+                        Start Tasks
+                    </a>
+
+                </div>
+            </div>
+
+
+            <!-- CODE VIEW (PROMO CODES) -->
+            <div id="code-view" class="view-section">
+                <div class="workspace-box">
+                    <h3 style="color: #198754;">
+                        <i class="fa-solid fa-ticket"></i>
+                        Enter Your Promo Code
+                    </h3>
+                    <p style="font-size: 14px; margin-bottom: 20px; color: #6c757d;">
+                        Enter your special reward code below to claim instant cash bonuses. (Each code can be used only once).
+                    </p>
+
+                    <div class="form-group">
+                        <label>Enter Code</label>
+                        <input type="text" id="promo-code-input" placeholder="e.g. Thankyoutypesearn">
+                    </div>
+
+                    <button class="btn-primary" onclick="redeemPromoCode()">
+                        Redeem Code
+                    </button>
+                </div>
+            </div>
+
+
+            <!-- TASK VERIFICATION VIEW -->
+            <div id="verification-view" class="view-section">
+                <h2 style="margin-bottom: 15px; color: #198754;">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                    Task Verification (2 Hours Timer)
+                </h2>
+                <p style="font-size: 13px; color: #6c757d; margin-bottom: 15px;">
+                    Submitted tasks undergo an automated review. Once verified successfully after 2 hours, earnings are credited to your wallet. Invalid tasks will be rejected.
+                </p>
+                <div id="verification-list">
+                    <p style="text-align:center; color:#6c757d; padding:20px;">
+                        No tasks under verification.
+                    </p>
+                </div>
+            </div>
+
+
+            <!-- CHECK-IN VIEW -->
+            <div id="checkin-view" class="view-section">
+
+                <h2 style="margin-bottom: 15px; color: #198754;">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    30-Day Daily Check-in & Badges
+                </h2>
+
+                <p style="font-size: 13px; color: #6c757d; margin-bottom: 15px;">
+                    Check in daily (once every 24 hours) from Day 1 to Day 30
+                    to unlock rewards and prestige badges!
+                </p>
+
+                <div class="checkin-grid" id="checkin-container"></div>
+
+
+                <h2 style="margin: 25px 0 15px 0; color: #198754;">
+                    <i class="fa-solid fa-medal"></i>
+                    Medals & Badges (Days 28 - 30)
+                </h2>
+
+                <div class="badges-grid">
+
+                    <div class="badge-box"
+                         id="badge-28"
+                         style="opacity: 0.5;">
+
+                        <i class="fa-solid fa-shield"
+                           style="color: #e5e4e2;"></i>
+
+                        <h5>Platinum Medal</h5>
+                        <p>Unlocked on Day 28</p>
+                    </div>
+
+
+                    <div class="badge-box"
+                         id="badge-29"
+                         style="opacity: 0.5;">
+
+                        <i class="fa-solid fa-gem"
+                           style="color: #b9f2ff;"></i>
+
+                        <h5>Diamond Medal</h5>
+                        <p>Unlocked on Day 29</p>
+                    </div>
+
+
+                    <div class="badge-box"
+                         id="badge-30"
+                         style="opacity: 0.5;">
+
+                        <i class="fa-solid fa-crown"
+                           style="color: #e0115f;"></i>
+
+                        <h5>Ruby Medal</h5>
+                        <p>Unlocked on Day 30</p>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- TASKS VIEW -->
+            <div id="tasks-view" class="view-section">
+
+                <h2 style="margin-bottom: 15px; color: #198754;">
+                    Available Heavy Tasks
+                </h2>
+
+
+                <!-- TASK 1 -->
+                <div class="task-card">
+
+                    <div class="task-info">
+                        <h4>Excel Data Entry</h4>
+
+                        <p>
+                            Re-enter exact structured database rows
+                            into spreadsheet cells accurately.
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="task-price">
+                            ₹500 / Sheet
+                        </div>
+
+                        <button class="btn-start"
+                                onclick="openTaskWorkspace('Excel Data Entry', 500)">
+                            Start Task
+                        </button>
+                    </div>
+
+                </div>
+
+
+                <!-- TASK 2 -->
+                <div class="task-card">
+
+                    <div class="task-info">
+                        <h4>Handwriting Transcription Task</h4>
+
+                        <p>
+                            Write the assigned reference text on paper, take a photo, and upload it.
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="task-price">
+                            ₹300 / Page
+                        </div>
+
+                        <button class="btn-start"
+                                onclick="openTaskWorkspace('Handwriting Transcription Task', 300)">
+                            Start Task
+                        </button>
+                    </div>
+
+                </div>
+
+
+                <!-- TASK 3 -->
+                <div class="task-card">
+
+                    <div class="task-info">
+                        <h4>PDF Task</h4>
+
+                        <p>
+                            Comprehensive multi-paragraph document
+                            drafting & exact text matching.
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="task-price">
+                            ₹200 / Project
+                        </div>
+
+                        <button class="btn-start"
+                                onclick="openTaskWorkspace('PDF Task', 200)">
+                            Start Task
+                        </button>
+                    </div>
+
+                </div>
+
+
+                <!-- TASK 4 -->
+                <div class="task-card">
+
+                    <div class="task-info">
+                        <h4>Heavy Excel Data Entry</h4>
+
+                        <p>
+                            Re-enter exact structured database rows
+                            into 20 spreadsheet cells accurately.
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="task-price">
+                            ₹1500 / Sheet
+                        </div>
+
+                        <button class="btn-start"
+                                onclick="openTaskWorkspace('Heavy Excel Data Entry', 1500)">
+                            Start Task
+                        </button>
+                    </div>
+
+                </div>
+
+
+                <!-- TASK 5 -->
+                <div class="task-card">
+
+                    <div class="task-info">
+                        <h4>Handwriting Long Transcription Task</h4>
+
+                        <p>
+                            Write the assigned extensive reference text on paper, take a photo, and upload it.
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="task-price">
+                            ₹3000 / Page
+                        </div>
+
+                        <button class="btn-start"
+                                onclick="openTaskWorkspace('Handwriting Long Transcription Task', 3000)">
+                            Start Task
+                        </button>
+                    </div>
+
+                </div>
+
+
+                <!-- TASK 6 -->
+                <div class="task-card">
+
+                    <div class="task-info">
+                        <h4>Long PDF</h4>
+
+                        <p>
+                            Comprehensive multi-section job opportunity
+                            drafting & exact text matching.
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="task-price">
+                            ₹600 / Project
+                        </div>
+
+                        <button class="btn-start"
+                                onclick="openTaskWorkspace('Long PDF', 600)">
+                            Start Task
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- TASK WORKSPACE -->
+            <div id="workspace-view" class="view-section">
+
+                <button class="btn-ref"
+                        style="margin-bottom: 15px; background: #6c757d; color: white;"
+                        onclick="switchView('tasks-view')">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Back to Tasks
+                </button>
+
+
+                <div class="workspace-box">
+
+                    <h3 id="ws-title">
+                        Task Workspace
+                    </h3>
+
+
+                    <div class="reference-box"
+                         id="ws-reference-box"
+                         oncopy="return false"
+                         oncut="return false"
+                         onpaste="return false"
+                         oncontextmenu="return false"
+                         style="user-select: none; -webkit-user-select: none;">
+
+                        <strong>
+                            <i class="fa-solid fa-book-open"></i>
+                            Provided Reference Content
+                            (Read/Write carefully):
+                        </strong>
+
+                        <p id="ws-ref-text"
+                           style="font-size: 13px; line-height: 1.6; color: #333; white-space: pre-line;">
+                        </p>
+
+                    </div>
+
+
+                    <!-- EXCEL -->
+                    <div id="excel-workspace-container"
+                         style="display:none;">
+
+                        <p style="font-size: 13px; color: #198754; font-weight: 600; margin-bottom: 10px;" id="excel-instruction-label">
+                            Type / Re-enter all records matching the reference data above:
+                        </p>
+
+                        <div class="excel-table-container">
+
+                            <table class="excel-table">
+
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Customer Name</th>
+                                        <th>Region</th>
+                                        <th>Units</th>
+                                        <th>Revenue (₹)</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="excel-tbody"></tbody>
+
+                            </table>
+
+                        </div>
+                    </div>
+
+
+                    <!-- FILE UPLOAD CONTAINER (FOR HANDWRITING TASK) -->
+                    <div class="form-group"
+                         id="file-upload-container"
+                         style="display:none;">
+
+                        <label id="file-upload-label-text"
+                               style="font-weight: 600; color: #198754;">
+                            Upload Written Page Photo (Choose File / Camera):
+                        </label>
+
+                        <input type="file"
+                               id="ws-file-input"
+                               accept="image/*"
+                               style="padding: 10px; background: #f8f9fa; border: 1px dashed #198754; cursor: pointer;">
+
+                        <p style="font-size: 12px; color: #6c757d; margin-top: 5px;">
+                            <i class="fa-solid fa-camera"></i> Click to select image from gallery or take a photo using camera. (Note: Uploading random images or blank photos will cause task rejection).
+                        </p>
+
+                    </div>
+
+
+                    <!-- TEXTAREA -->
+                    <div class="form-group"
+                         id="input-container"
+                         style="display:none;">
+
+                        <label id="input-label-text"
+                               style="font-weight: 600; color: #198754;">
+                            Type Content Here
+                            (Copy-paste is disabled, manual typing required):
+                        </label>
+
+                        <textarea id="ws-input"
+                                  rows="10"
+                                  placeholder="Type or re-enter exact content here..."
+                                  oncopy="return false"
+                                  onpaste="return false"
+                                  oncut="return false"
+                                  style="font-size: 13px; line-height: 1.5;">
+                        </textarea>
+
+                    </div>
+
+
+                    <button class="btn-primary"
+                            onclick="submitTaskWork()"
+                            style="margin-top: 15px;">
+
+                        Submit Task for Verification
+
+                    </button>
+
+                </div>
+            </div>
+
+
+            <!-- WALLET VIEW -->
+            <div id="wallet-view" class="view-section">
+
+                <div class="withdraw-box">
+
+                    <h2 style="margin-bottom: 15px; color: #198754;">
+                        My Wallet & Withdraw
+                    </h2>
+
+
+                    <div class="stat-card bg-balance"
+                         style="margin-bottom: 20px;">
+
+                        <div>
+                            <h4>Available Balance</h4>
+
+                            <h2>
+                                ₹ <span id="wallet-balance">149</span>
+                            </h2>
+                        </div>
+
+                        <i class="fa-solid fa-wallet"></i>
+
+                    </div>
+
+
+                    <div class="warning-box">
+
+                        <strong>⚠ Important Warnings:</strong><br>
+
+                        • Minimum withdrawal amount is
+                        <strong>₹1000</strong>.
+                        No maximum limit.<br>
+
+                        • Entering incorrect Bank Details or UPI ID
+                        will result in permanent payment failure.<br>
+
+                        • Withdrawal processing takes a minimum of
+                        <strong>2 hours</strong>
+                        and maximum up to
+                        <strong>24 hours</strong>.
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>Select Payment Method</label>
+
+                        <select id="pay-method"
+                                onchange="updateWithdrawalFields()">
+
+                            <option value="Bank Account">
+                                Bank Account
+                            </option>
+
+                            <option value="Paytm UPI">
+                                Paytm UPI
+                            </option>
+
+                            <option value="PhonePe UPI">
+                                PhonePe UPI
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Enter Amount to Withdraw
+                            (Min ₹1000)
+                        </label>
+
+                        <input type="number"
+                               id="withdraw-amount"
+                               placeholder="Enter amount">
+
+                    </div>
+
+
+                    <div id="dynamic-payment-fields">
+
+                        <div class="form-group">
+                            <label>Account Holder Name</label>
+
+                            <input type="text"
+                                   id="acc-name"
+                                   placeholder="Enter full name as per bank">
+                        </div>
+
+
+                        <div class="form-group">
+                            <label>Account Number</label>
+
+                            <input type="text"
+                                   id="acc-number"
+                                   placeholder="Enter account number">
+                        </div>
+
+
+                        <div class="form-group">
+                            <label>IFSC Code</label>
+
+                            <input type="text"
+                                   id="acc-ifsc"
+                                   placeholder="Enter bank IFSC code">
+                        </div>
+
+                    </div>
+
+
+                    <button class="btn-primary"
+                            onclick="requestWithdrawal()">
+
+                        Withdraw Now
+
+                    </button>
+
+                </div>
+            </div>
+
+
+            <!-- TASK HISTORY -->
+            <div id="history-view" class="view-section">
+
+                <h2 style="margin-bottom: 15px; color: #198754;">
+                    Task History
+                </h2>
+
+                <div id="task-history-list">
+
+                    <p style="text-align:center; color:#6c757d; padding:20px;">
+                        No task history yet.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- WITHDRAWAL HISTORY -->
+            <div id="withdraw-history-view" class="view-section">
+
+                <h2 style="margin-bottom: 15px; color: #198754;">
+                    Withdrawal History
+                </h2>
+
+                <div id="withdrawal-history-list">
+
+                    <p style="text-align:center; color:#6c757d; padding:20px;">
+                        No withdrawal history yet.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- REFER VIEW -->
+            <div id="refer-view" class="view-section">
+
+                <div class="workspace-box">
+
+                    <h3 style="color: #198754;">
+                        <i class="fa-solid fa-user-plus"></i>
+                        Refer & Earn ₹1000
+                    </h3>
+
+                    <p style="font-size: 14px; margin-bottom: 15px; line-height: 1.6;">
+                        Share your referral link with friends.
+                        Earn rewards automatically!
+                    </p>
+
+
+                    <div class="form-group">
+
+                        <label>Your Referral Link</label>
+
+                        <input type="text"
+                               id="ref-link-input"
+                               value="https://typeandearn.app/ref/SEP8683466"
+                               readonly>
+
+                    </div>
+
+
+                    <button class="btn-primary"
+                            onclick="copyReferralLink()">
+
+                        Copy Link
+
+                    </button>
+
+                </div>
+            </div>
+
+
+            <!-- DONATION VIEW -->
+            <div id="donation-view" class="view-section">
+
+                <div class="workspace-box">
+
+                    <h3 style="color: #198754;">
+                        <i class="fa-solid fa-hand-holding-heart"></i>
+                        Donation / दान
+                    </h3>
+
+
+                    <!-- DONATION HERO -->
+                    <div class="donation-hero">
+
+                        <h4>
+                            ❤️ Help Someone in Need
+                        </h4>
+
+                        <p style="font-size: 13px;">
+                            आपकी छोटी सी मदद किसी जरूरतमंद
+                            के चेहरे पर बड़ी मुस्कान ला सकती है।
+                        </p>
+
+                        <p style="font-size: 13px; margin-top: 8px;">
+                            Your small contribution can become
+                            a big support for someone in need.
+                        </p>
+
+                    </div>
+
+
+                    <!-- DONATION MESSAGE -->
+                    <div class="donation-info">
+
+                        <strong>
+                            🌱 आपका दान, किसी की उम्मीद
+                        </strong>
+
+                        <p style="font-size:13px; margin-top:7px;">
+                            जरूरतमंद लोगों की सहायता के लिए
+                            अपनी इच्छा के अनुसार कोई भी राशि दान करें।
+                        </p>
+
+                        <p style="font-size:13px; margin-top:7px;">
+                            Donate any amount you wish and
+                            be a reason for someone's hope.
+                        </p>
+
+                        <p style="font-size:13px; margin-top:7px;">
+                            🙏 हर छोटा योगदान मायने रखता है।
+                            <br>
+                            Every little contribution makes a difference.
+                        </p>
+
+                    </div>
+
+
+                    <!-- DONOR NAME -->
+                    <div class="form-group">
+
+                        <label>
+                            Enter Your Name
+                        </label>
+
+                        <input type="text"
+                               id="donation-name"
+                               placeholder="Enter your name">
+
+                    </div>
+
+
+                    <!-- DONATION AMOUNT -->
+                    <div class="form-group">
+
+                        <label>
+                            Enter Your Amount
+                        </label>
+
+                        <input type="number"
+                               id="donation-amount"
+                               placeholder="Enter donation amount"
+                               min="0.01"
+                               step="0.01">
+
+                    </div>
+
+
+                    <!-- AVAILABLE BALANCE -->
+                    <div class="donation-balance">
+
+                        Available Balance:
+
+                        <strong>
+                            ₹ <span id="donation-balance">149</span>
+                        </strong>
+
+                    </div>
+
+
+                    <!-- DONATE BUTTON -->
+                    <button class="btn-primary"
+                            onclick="makeDonation()">
+
+                        <i class="fa-solid fa-heart"></i>
+                        Donate Now
+
+                    </button>
+
+
+                    <div class="donation-note">
+
+                        कोई निश्चित minimum या maximum donation limit नहीं है।
+                        <br>
+
+                        No fixed minimum or maximum donation limit.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- MY DONATION VIEW -->
+            <div id="my-donation-view" class="view-section">
+                <h2 style="margin-bottom: 15px; color: #198754;">
+                    <i class="fa-solid fa-list-check"></i>
+                    My Donations
+                </h2>
+                <p style="font-size: 13px; color: #6c757d; margin-bottom: 15px;">
+                    Here is the history of all your contributions to people in need.
+                </p>
+                <div id="my-donations-list">
+                    <p style="text-align:center; color:#6c757d; padding:20px;">
+                        No donations made yet.
+                    </p>
+                </div>
+            </div>
+
+
+            <!-- PROFILE -->
+            <div id="profile-view" class="view-section">
+
+                <div class="workspace-box">
+
+                    <h3 style="color: #198754;">
+                        <i class="fa-solid fa-user-pen"></i>
+                        Edit Profile
+                    </h3>
+
+
+                    <div class="form-group">
+
+                        <label>Full Name</label>
+
+                        <input type="text"
+                               id="edit-name">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>Username</label>
+
+                        <input type="text"
+                               id="edit-username">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>Mobile Number</label>
+
+                        <input type="text"
+                               id="edit-phone"
+                               readonly>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>Email ID</label>
+
+                        <input type="email"
+                               id="edit-email"
+                               readonly>
+
+                    </div>
+
+
+                    <button class="btn-primary"
+                            onclick="saveProfile()">
+
+                        Save Changes
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- SUPPORT -->
+            <div id="support-view" class="view-section">
+
+                <div class="workspace-box">
+
+                    <h3 style="color: #198754;">
+                        <i class="fa-solid fa-headset"></i>
+                        Help & Support
+                    </h3>
+
+                    <p style="font-size: 14px; margin-bottom: 20px; color: #6c757d;">
+                        Need assistance? Reach out to us directly
+                        through any of our support channels below:
+                    </p>
+
+
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+
+                        <a href="tel:8860169304"
+                           style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-decoration: none; color: #333; display: flex; align-items: center; gap: 15px; border: 1px solid #ddd;">
+
+                            <i class="fa-solid fa-phone-volume"
+                               style="font-size: 22px; color: #198754;"></i>
+
+                            <div>
+                                <strong>
+                                    Direct Call Support
+                                </strong>
+
+                                <br>
+
+                                <span style="font-size: 13px; color: #6c757d;">
+                                    8860169304
+                                </span>
+                            </div>
+
+                        </a>
+
+
+                        <a href="https://wa.me/918860169304"
+                           target="_blank"
+                           style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-decoration: none; color: #333; display: flex; align-items: center; gap: 15px; border: 1px solid #ddd;">
+
+                            <i class="fa-brands fa-whatsapp"
+                               style="font-size: 24px; color: #25d366;"></i>
+
+                            <div>
+
+                                <strong style="color: #25d366;">
+                                    WhatsApp Chat Support
+                                </strong>
+
+                                <br>
+
+                                <span style="font-size: 13px; color: #6c757d;">
+                                    Instant messaging support
+                                </span>
+
+                            </div>
+
+                        </a>
+
+
+                        <a href="mailto:faizanvlogs887@gmail.com"
+                           style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-decoration: none; color: #333; display: flex; align-items: center; gap: 15px; border: 1px solid #ddd;">
+
+                            <i class="fa-solid fa-envelope"
+                               style="font-size: 22px; color: #dc3545;"></i>
+
+                            <div>
+
+                                <strong style="color: #dc3545;">
+                                    Email Support
+                                </strong>
+
+                                <br>
+
+                                <span style="font-size: 13px; color: #6c757d;">
+                                    faizanvlogs887@gmail.com
+                                </span>
+
+                            </div>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- TOAST -->
+    <div class="alert-toast" id="toast">
+        Action successful!
+    </div>
+
+
+    <!-- JAVASCRIPT -->
+    <script>
+
+        /* =========================
+           CUSTOM ALERT MODAL FUNCTION
+        ========================= */
+
+        function showCustomAlert(title, message, iconClass = "fa-solid fa-circle-check") {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = message;
+            document.getElementById('modal-icon').innerHTML = `<i class="${iconClass}"></i>`;
+            document.getElementById('custom-modal-overlay').style.display = 'flex';
+        }
+
+        function closeCustomModal() {
+            document.getElementById('custom-modal-overlay').style.display = 'none';
+        }
+
+
+        /* =========================
+           CURRENT USER
+        ========================= */
+
+        let currentUser = {
+            name: "",
+            username: "",
+            phone: "",
+            email: "",
+            password: "",
+            balance: 149,
+            withdrawn: 0,
+            team: 0,
+
+            breakdowns: {
+                login: 149,
+                referral: 0,
+                excel: 0,
+                handwriting: 0,
+                pdf: 0,
+                rewards: 0,
+                promo: 0
+            },
+
+            checkedDays: [],
+            lastCheckinTime: 0
+        };
+
+
+        let currentTask = {
+            name: "",
+            price: 0
+        };
+
+        let withdrawalHistory = [];
+        let taskHistory = [];
+        let verificationTasks = [];
+        let donationHistory = [];
+        let usedPromoCodes = [];
+
+
+        /* =========================
+           EXCEL REFERENCES (10 & 20 ROWS)
+        ========================= */
+
+        const excelReferenceData10 = [
+            { id: 101, name: "Rajesh Kumar", region: "North", units: "450", rev: "22500" },
+            { id: 102, name: "Priya Sharma", region: "South", units: "320", rev: "16000" },
+            { id: 103, name: "Amit Verma", region: "East", units: "510", rev: "25500" },
+            { id: 104, name: "Sunita Singh", region: "West", units: "280", rev: "14000" },
+            { id: 105, name: "Rahul Gupta", region: "Central", units: "600", rev: "30000" },
+            { id: 106, name: "Neha Patel", region: "North", units: "390", rev: "19500" },
+            { id: 107, name: "Vikram Malhotra", region: "South", units: "440", rev: "22000" },
+            { id: 108, name: "Anjali Roy", region: "East", units: "310", rev: "15500" },
+            { id: 109, name: "Manoj Tiwari", region: "West", units: "530", rev: "26500" },
+            { id: 110, name: "Pooja Deshmukh", region: "Central", units: "480", rev: "24000" }
+        ];
+
+        const excelReferenceData20 = [
+            ...excelReferenceData10,
+            { id: 111, name: "Suresh Menon", region: "South", units: "410", rev: "20500" },
+            { id: 112, name: "Kavita Rao", region: "North", units: "290", rev: "14500" },
+            { id: 113, name: "Deepak Joshi", region: "East", units: "350", rev: "17500" },
+            { id: 114, name: "Meena Iyer", region: "West", units: "480", rev: "24000" },
+            { id: 115, name: "Arun Nair", region: "Central", units: "520", rev: "26000" },
+            { id: 116, name: "Geeta Pillai", region: "South", units: "330", rev: "16500" },
+            { id: 117, name: "Rohan Das", region: "North", units: "460", rev: "23000" },
+            { id: 118, name: "Sneha Sen", region: "East", units: "390", rev: "19500" },
+            { id: 119, name: "Karan Ghosh", region: "West", units: "550", rev: "27500" },
+            { id: 120, name: "Divya Nambiar", region: "Central", units: "420", rev: "21000" }
+        ];
+
+
+        /* =========================
+           TASK TEXTS
+        ========================= */
+
+        const handwritingText1 = 
+`Interviewer: Tell me about yourself.
+You: My name is Faizan. I am hardworking, honest, and a quick learner.
+
+Interviewer: Why should we hire you?
+You: I am responsible and always give my best.
+
+Interviewer: Thank you.
+You: Thank you.`;
+
+        const pdfText1 = 
+`JOB OPPORTUNITY
+
+Position: Data Entry / Typing Assistant
+
+Work: Typing, data entry, and basic online tasks.
+
+Skills: Basic computer/mobile knowledge and good typing skills.
+
+Timing: Flexible
+
+Payment: Based on completed work
+
+Requirements: Honest, responsible, and willing to learn.`;
+
+        const handwritingText2 = 
+`Interviewer: Tell me about yourself.
+
+You: My name is Faizan. I am a hardworking, responsible, and quick learner. I always try to complete my work on time and give my best.
+
+Interviewer: Why should we hire you?
+
+You: Because I am dedicated, honest, and willing to learn new things. I will work sincerely and contribute to the team.
+
+Interviewer: What are your strengths?
+
+You: My strengths are hard work, punctuality, and learning quickly.
+
+Interviewer: Do you have any questions for us?
+
+You: Yes. I would like to know more about the role and my responsibilities.
+
+Interviewer: Thank you.
+
+You: Thank you for giving me this opportunity.`;
+
+        const pdfText2 = 
+`JOB OPPORTUNITY
+
+Position: Data Entry & Typing Assistant
+
+We are looking for hardworking and responsible people for a simple Data Entry & Typing job. The work is easy to understand and can be completed using a mobile phone or computer.
+
+Job Responsibilities
+
+- Typing and entering provided information
+- Completing simple online tasks
+- Checking and submitting completed work
+- Following task instructions carefully
+- Maintaining accuracy while working
+
+Requirements
+
+- Basic knowledge of mobile or computer
+- Basic typing skills
+- Good attention to detail
+- Responsible and punctual
+- Willingness to learn
+
+Work Timing
+
+Flexible working hours — you can complete tasks according to your available time.
+
+Payment
+
+Payment will be based on the work completed and approved according to the applicable task rates.
+
+Important
+
+Always follow the given instructions carefully and submit genuine, accurate work. No special experience is required; basic skills and a willingness to learn are enough.
+
+Apply Now & Start Working!`;
+
+
+        /* =========================
+           CHECK-IN REWARDS
+        ========================= */
+
+        const checkinRewards = [
+
+            50,
+            100,
+            200,
+            500,
+            700,
+            1000,
+            1500,
+            2000,
+            2500,
+            3000,
+
+            4000,
+            5000,
+            6000,
+            7000,
+            8000,
+            9000,
+            10000,
+            10500,
+            11000,
+            11500,
+
+            12000,
+            13000,
+            14000,
+            15000,
+            16000,
+            17000,
+            18000,
+
+            0,
+            0,
+            0
+
+        ];
+
+
+        /* =========================
+           PAGE LOAD
+        ========================= */
+
+        window.onload = function() {
+
+            const savedUser =
+                localStorage.getItem('te_current_user');
+
+            if(savedUser) {
+
+                currentUser =
+                    JSON.parse(savedUser);
+
+                loadUserDataStorage();
+
+                startAppDirect();
+            }
+        };
+
+
+        /* =========================
+           TOAST
+        ========================= */
+
+        function showToast(msg) {
+
+            const toast =
+                document.getElementById('toast');
+
+            toast.innerText = msg;
+
+            toast.style.display = 'block';
+
+            setTimeout(() => {
+
+                toast.style.display = 'none';
+
+            }, 3000);
+        }
+
+
+        /* =========================
+           AUTH TOGGLE
+        ========================= */
+
+        function toggleAuth(isSignup) {
+
+            document.getElementById('login-card').style.display =
+                isSignup ? 'none' : 'block';
+
+            document.getElementById('signup-card').style.display =
+                isSignup ? 'block' : 'none';
+        }
+
+
+        /* =========================
+           LOGIN
+        ========================= */
+
+        function handleLogin() {
+
+            const phone =
+                document.getElementById('login-phone')
+                .value.trim();
+
+            const email =
+                document.getElementById('login-email')
+                .value.trim();
+
+            const password =
+                document.getElementById('login-password')
+                .value.trim();
+
+
+            if(!phone || !email || !password) {
+
+                showCustomAlert('Error', 'Please enter mobile number, email ID, and password.', 'fa-solid fa-triangle-exclamation');
+
+                return;
+            }
+
+
+            const allUsers =
+                JSON.parse(
+                    localStorage.getItem('te_all_users') || '{}'
+                );
+
+
+            const userKey =
+                phone + "_" + email;
+
+
+            if(!allUsers[userKey]) {
+
+                showCustomAlert('Account Not Found', 'Account not found! Please sign up first.', 'fa-solid fa-circle-exclamation');
+
+                return;
+            }
+
+
+            const existingUser = allUsers[userKey];
+
+            if(existingUser.password !== password) {
+                showCustomAlert('Incorrect Password', 'Incorrect password! Please try again.', 'fa-solid fa-circle-exclamation');
+                return;
+            }
+
+
+            currentUser = existingUser;
+
+            loadUserDataStorage();
+
+            saveUserSession();
+
+            startAppDirect();
+        }
+
+
+        /* =========================
+           SIGNUP
+        ========================= */
+
+        function handleSignup() {
+
+            const name =
+                document.getElementById('su-name')
+                .value.trim();
+
+            const username =
+                document.getElementById('su-username')
+                .value.trim();
+
+            const phone =
+                document.getElementById('su-phone')
+                .value.trim();
+
+            const email =
+                document.getElementById('su-email')
+                .value.trim();
+
+            const password =
+                document.getElementById('su-password')
+                .value.trim();
+
+
+            if(!name || !username || !phone || !email || !password) {
+
+                showCustomAlert('Error', 'Please fill all fields including password for registration', 'fa-solid fa-triangle-exclamation');
+
+                return;
+            }
+
+
+            const userKey =
+                phone + "_" + email;
+
+
+            let allUsers =
+                JSON.parse(
+                    localStorage.getItem('te_all_users') || '{}'
+                );
+
+
+            currentUser = {
+
+                name: name,
+                username: username,
+                phone: phone,
+                email: email,
+                password: password,
+
+                balance: 149,
+                withdrawn: 0,
+                team: 0,
+
+                breakdowns: {
+
+                    login: 149,
+                    referral: 0,
+                    excel: 0,
+                    handwriting: 0,
+                    pdf: 0,
+                    rewards: 0,
+                    promo: 0
+
+                },
+
+                checkedDays: [],
+                lastCheckinTime: 0
+
+            };
+
+
+            taskHistory = [];
+            withdrawalHistory = [];
+            verificationTasks = [];
+            donationHistory = [];
+            usedPromoCodes = [];
+
+
+            allUsers[userKey] =
+                currentUser;
+
+
+            localStorage.setItem(
+                'te_all_users',
+                JSON.stringify(allUsers)
+            );
+
+
+            saveUserSession();
+
+            startAppDirect();
+
+
+            showCustomAlert('Congratulations!', `🎉 Congratulations ${name}! You won Signup Bonus ₹149!`, 'fa-solid fa-award');
+
+            showToast(
+                'Account created successfully & ₹149 added!'
+            );
+        }
+
+
+        /* =========================
+           SAVE USER
+        ========================= */
+
+        function saveUserSession() {
+
+            localStorage.setItem(
+                'te_current_user',
+                JSON.stringify(currentUser)
+            );
+
+
+            const userKey =
+                currentUser.phone +
+                "_" +
+                currentUser.email;
+
+
+            let allUsers =
+                JSON.parse(
+                    localStorage.getItem('te_all_users') || '{}'
+                );
+
+
+            allUsers[userKey] =
+                currentUser;
+
+
+            localStorage.setItem(
+                'te_all_users',
+                JSON.stringify(allUsers)
+            );
+
+
+            persistUserDataStorage();
+        }
+
+
+        /* =========================
+           PERSIST USER DATA
+        ========================= */
+
+        function persistUserDataStorage() {
+
+            const prefix =
+                currentUser.phone +
+                "_" +
+                currentUser.email +
+                "_";
+
+
+            localStorage.setItem(
+                prefix + 'data',
+                JSON.stringify(currentUser)
+            );
+
+
+            localStorage.setItem(
+                prefix + 'tasks',
+                JSON.stringify(taskHistory)
+            );
+
+
+            localStorage.setItem(
+                prefix + 'withdrawals',
+                JSON.stringify(withdrawalHistory)
+            );
+
+            localStorage.setItem(
+                prefix + 'verification',
+                JSON.stringify(verificationTasks)
+            );
+
+            localStorage.setItem(
+                prefix + 'donations',
+                JSON.stringify(donationHistory)
+            );
+
+            localStorage.setItem(
+                prefix + 'promos',
+                JSON.stringify(usedPromoCodes)
+            );
+        }
+
+
+        /* =========================
+           LOAD USER DATA
+        ========================= */
+
+        function loadUserDataStorage() {
+
+            const prefix =
+                currentUser.phone +
+                "_" +
+                currentUser.email +
+                "_";
+
+
+            const savedData =
+                localStorage.getItem(prefix + 'data');
+
+            const th =
+                localStorage.getItem(prefix + 'tasks');
+
+            const wh =
+                localStorage.getItem(prefix + 'withdrawals');
+
+            const vt =
+                localStorage.getItem(prefix + 'verification');
+
+            const dh =
+                localStorage.getItem(prefix + 'donations');
+
+            const pc =
+                localStorage.getItem(prefix + 'promos');
+
+
+            if(savedData !== null) {
+
+                currentUser =
+                    JSON.parse(savedData);
+            }
+
+
+            if(!currentUser.breakdowns) {
+
+                currentUser.breakdowns = {
+
+                    login: 149,
+                    referral: 0,
+                    excel: 0,
+                    handwriting: 0,
+                    pdf: 0,
+                    rewards: 0,
+                    promo: 0
+
+                };
+            }
+
+
+            if(!currentUser.checkedDays) {
+
+                currentUser.checkedDays = [];
+            }
+
+
+            taskHistory =
+                th !== null
+                ? JSON.parse(th)
+                : [];
+
+
+            withdrawalHistory =
+                wh !== null
+                ? JSON.parse(wh)
+                : [];
+
+            verificationTasks =
+                vt !== null
+                ? JSON.parse(vt)
+                : [];
+
+            donationHistory =
+                dh !== null
+                ? JSON.parse(dh)
+                : [];
+
+            usedPromoCodes =
+                pc !== null
+                ? JSON.parse(pc)
+                : [];
+        }
+
+
+        /* =========================
+           START APP
+        ========================= */
+
+        function startAppDirect() {
+
+            document.getElementById(
+                'auth-section'
+            ).style.display = 'none';
+
+
+            document.getElementById(
+                'app-section'
+            ).style.display = 'block';
+
+
+            updateUI();
+
+            renderCheckinGrid();
+
+            renderTaskHistory();
+
+            renderWithdrawalHistory();
+
+            renderVerificationList();
+
+            renderMyDonations();
+        }
+
+
+        /* =========================
+           LOGOUT
+        ========================= */
+
+        function logout() {
+
+            localStorage.removeItem(
+                'te_current_user'
+            );
+
+
+            document.getElementById(
+                'app-section'
+            ).style.display = 'none';
+
+
+            document.getElementById(
+                'auth-section'
+            ).style.display = 'flex';
+        }
+
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        function toggleSidebar() {
+
+            document.getElementById(
+                'sidebar'
+            ).classList.toggle('active');
+
+
+            document.getElementById(
+                'overlay'
+            ).classList.toggle('active');
+        }
+
+
+        /* =========================
+           SWITCH VIEW
+        ========================= */
+
+        function switchView(viewId) {
+
+            document.querySelectorAll(
+                '.view-section'
+            ).forEach(el => {
+
+                el.classList.remove('active');
+
+            });
+
+
+            const target =
+                document.getElementById(viewId);
+
+
+            if(target) {
+
+                target.classList.add('active');
+            }
+
+
+            if(viewId === 'checkin-view') {
+
+                renderCheckinGrid();
+            }
+
+
+            if(viewId === 'home-view') {
+
+                updateBreakdownUI();
+            }
+
+
+            if(viewId === 'donation-view') {
+
+                updateDonationBalance();
+            }
+
+            if(viewId === 'verification-view') {
+
+                renderVerificationList();
+            }
+
+            if(viewId === 'my-donation-view') {
+
+                renderMyDonations();
+            }
+        }
+
+
+        /* =========================
+           UPDATE UI
+        ========================= */
+
+        function updateUI() {
+
+            document.getElementById(
+                'welcome-name'
+            ).innerText =
+                `Welcome, ${currentUser.name}`;
+
+
+            document.getElementById(
+                'header-avatar'
+            ).innerText =
+                currentUser.name
+                ? currentUser.name.charAt(0).toUpperCase()
+                : 'U';
+
+
+            document.getElementById(
+                'lbl-balance'
+            ).innerText =
+                currentUser.balance;
+
+
+            document.getElementById(
+                'wallet-balance'
+            ).innerText =
+                currentUser.balance;
+
+
+            document.getElementById(
+                'lbl-withdrawn'
+            ).innerText =
+                currentUser.withdrawn;
+
+
+            document.getElementById(
+                'lbl-team'
+            ).innerText =
+                currentUser.team;
+
+
+            document.getElementById(
+                'edit-name'
+            ).value =
+                currentUser.name;
+
+
+            document.getElementById(
+                'edit-username'
+            ).value =
+                currentUser.username;
+
+
+            document.getElementById(
+                'edit-phone'
+            ).value =
+                currentUser.phone;
+
+
+            document.getElementById(
+                'edit-email'
+            ).value =
+                currentUser.email;
+
+
+            updateBreakdownUI();
+
+            updateDonationBalance();
+        }
+
+
+        /* =========================
+           BREAKDOWN
+        ========================= */
+
+        function updateBreakdownUI() {
+
+            document.getElementById(
+                'bk-login'
+            ).innerText =
+                currentUser.breakdowns.login || 149;
+
+
+            document.getElementById(
+                'bk-referral'
+            ).innerText =
+                currentUser.breakdowns.referral || 0;
+
+
+            document.getElementById(
+                'bk-excel'
+            ).innerText =
+                currentUser.breakdowns.excel || 0;
+
+
+            document.getElementById(
+                'bk-handwriting'
+            ).innerText =
+                currentUser.breakdowns.handwriting || 0;
+
+
+            document.getElementById(
+                'bk-pdf'
+            ).innerText =
+                currentUser.breakdowns.pdf || 0;
+
+
+            document.getElementById(
+                'bk-rewards'
+            ).innerText =
+                currentUser.breakdowns.rewards || 0;
+        }
+
+
+        /* =========================
+           PROFILE
+        ========================= */
+
+        function saveProfile() {
+
+            currentUser.name =
+                document.getElementById(
+                    'edit-name'
+                ).value;
+
+
+            currentUser.username =
+                document.getElementById(
+                    'edit-username'
+                ).value;
+
+
+            saveUserSession();
+
+            updateUI();
+
+            showToast(
+                'Profile updated successfully!'
+            );
+        }
+
+
+        /* =========================
+           REFERRAL
+        ========================= */
+
+        function copyReferralLink() {
+
+            const linkInput =
+                document.getElementById(
+                    'ref-link-input'
+                );
+
+
+            navigator.clipboard.writeText(
+                linkInput.value
+            );
+
+
+            showToast(
+                'Referral link copied!'
+            );
+
+
+            setTimeout(() => {
+
+                currentUser.team += 1;
+
+                currentUser.breakdowns.referral += 1000;
+
+                currentUser.balance += 1000;
+
+                saveUserSession();
+
+                updateUI();
+
+                showToast(
+                    'New referral registered! ₹1000 added.'
+                );
+
+            }, 7200000);
+        }
+
+
+        /* =========================
+           CHECK-IN GRID
+        ========================= */
+
+        function renderCheckinGrid() {
+
+            const container =
+                document.getElementById(
+                    'checkin-container'
+                );
+
+
+            container.innerHTML = '';
+
+
+            const now =
+                new Date().getTime();
+
+
+            const cooldownTime =
+                24 * 60 * 60 * 1000;
+
+
+            const timePassed =
+                now -
+                (currentUser.lastCheckinTime || 0);
+
+
+            const canCheckinNow =
+                timePassed >= cooldownTime ||
+                currentUser.checkedDays.length === 0;
+
+
+            for(let i = 1; i <= 30; i++) {
+
+                const isClaimed =
+                    currentUser.checkedDays.includes(i);
+
+
+                const isNext =
+                    currentUser.checkedDays.length + 1 === i;
+
+
+                const amt =
+                    checkinRewards[i - 1];
+
+
+                const div =
+                    document.createElement('div');
+
+
+                if(i >= 28) {
+
+                    let badgeName =
+                        i === 28
+                        ? 'Platinum'
+                        : i === 29
+                        ? 'Diamond'
+                        : 'Ruby';
+
+
+                    div.className =
+                        `checkin-box ${
+                            isClaimed
+                            ? 'claimed'
+                            : (!isNext || !canCheckinNow)
+                            ? 'locked'
+                            : ''
+                        }`;
+
+
+                    div.innerHTML = `
+
+                        <h5>Day ${i}</h5>
+
+                        <p>
+                            <i class="fa-solid fa-medal"></i>
+                            ${badgeName}
+                        </p>
+
+                    `;
+
+                } else {
+
+                    div.className =
+                        `checkin-box ${
+                            isClaimed
+                            ? 'claimed'
+                            : (!isNext || !canCheckinNow)
+                            ? 'locked'
+                            : ''
+                        }`;
+
+
+                    div.innerHTML = `
+
+                        <h5>Day ${i}</h5>
+
+                        <p>₹${amt}</p>
+
+                    `;
+                }
+
+
+                if(
+                    !isClaimed &&
+                    isNext &&
+                    canCheckinNow
+                ) {
+
+                    div.onclick =
+                        () => claimCheckin(i, amt);
+
+                } else if(
+                    !isClaimed &&
+                    (!isNext || !canCheckinNow)
+                ) {
+
+                    div.onclick =
+                        () => showToast(
+                            timePassed < cooldownTime
+                            ? 'Next check-in available after 24 hours!'
+                            : 'Please claim previous days first!'
+                        );
+                }
+
+
+                container.appendChild(div);
+            }
+
+
+            for(let d = 28; d <= 30; d++) {
+
+                const box =
+                    document.getElementById(
+                        `badge-${d}`
+                    );
+
+
+                if(box) {
+
+                    if(
+                        currentUser.checkedDays.includes(d)
+                    ) {
+
+                        box.style.opacity = '1';
+
+                        box.style.borderColor =
+                            '#198754';
+
+                        box.style.background =
+                            '#e8f5e9';
+
+                    } else {
+
+                        box.style.opacity = '0.5';
+                    }
+                }
+            }
+        }
+
+
+        /* =========================
+           CLAIM CHECK-IN
+        ========================= */
+
+        function claimCheckin(day, amt) {
+
+            currentUser.checkedDays.push(day);
+
+            currentUser.lastCheckinTime =
+                new Date().getTime();
+
+
+            if(amt > 0) {
+
+                currentUser.balance += amt;
+
+                currentUser.breakdowns.rewards += amt;
+
+                showToast(
+                    `Day ${day} check-in claimed! ₹${amt} added.`
+                );
+
+            } else {
+
+                let badgeName =
+                    day === 28
+                    ? 'Platinum Medal'
+                    : day === 29
+                    ? 'Diamond Medal'
+                    : 'Ruby Medal';
+
+
+                showToast(
+                    `🎉 Day ${day} unlocked: ${badgeName} earned!`
+                );
+            }
+
+
+            saveUserSession();
+
+            updateUI();
+
+            renderCheckinGrid();
+        }
+
+
+        /* =========================
+           OPEN TASK WORKSPACE
+        ========================= */
+
+        function openTaskWorkspace(
+            taskName,
+            price
+        ) {
+
+            currentTask.name =
+                taskName;
+
+
+            currentTask.price =
+                price;
+
+
+            document.getElementById(
+                'ws-title'
+            ).innerText =
+                taskName +
+                ` (Earn ₹${price})`;
+
+
+            const refText =
+                document.getElementById(
+                    'ws-ref-text'
+                );
+
+
+            if(taskName === 'Excel Data Entry') {
+
+                let refStr = "";
+                excelReferenceData10.forEach((row, idx) => {
+                    refStr += `Row ${idx + 1}: ID: ${row.id}, Customer: ${row.name}, Region: ${row.region}, Units: ${row.units}, Revenue: ${row.rev}; `;
+                });
+                refText.innerText = refStr;
+
+                const tbody = document.getElementById('excel-tbody');
+                tbody.innerHTML = "";
+                excelReferenceData10.forEach((row) => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${row.id}</td>
+                            <td><input type="text" class="excel-input-cell excel-name" data-expected="${row.name}" placeholder="Type: ${row.name}"></td>
+                            <td><input type="text" class="excel-input-cell excel-region" data-expected="${row.region}" placeholder="Type: ${row.region}"></td>
+                            <td><input type="text" class="excel-input-cell excel-units" data-expected="${row.units}" placeholder="Type: ${row.units}"></td>
+                            <td><input type="text" class="excel-input-cell excel-rev" data-expected="${row.rev}" placeholder="Type: ${row.rev}"></td>
+                        </tr>
+                    `;
+                });
+
+                document.getElementById('excel-workspace-container').style.display = 'block';
+                document.getElementById('file-upload-container').style.display = 'none';
+                document.getElementById('input-container').style.display = 'none';
+                document.getElementById('excel-instruction-label').innerText = "Type / Re-enter all 10 records matching the reference data above:";
+
+            } else if(taskName === 'Heavy Excel Data Entry') {
+
+                let refStr = "";
+                excelReferenceData20.forEach((row, idx) => {
+                    refStr += `Row ${idx + 1}: ID: ${row.id}, Customer: ${row.name}, Region: ${row.region}, Units: ${row.units}, Revenue: ${row.rev}; `;
+                });
+                refText.innerText = refStr;
+
+                const tbody = document.getElementById('excel-tbody');
+                tbody.innerHTML = "";
+                excelReferenceData20.forEach((row) => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${row.id}</td>
+                            <td><input type="text" class="excel-input-cell excel-name" data-expected="${row.name}" placeholder="Type: ${row.name}"></td>
+                            <td><input type="text" class="excel-input-cell excel-region" data-expected="${row.region}" placeholder="Type: ${row.region}"></td>
+                            <td><input type="text" class="excel-input-cell excel-units" data-expected="${row.units}" placeholder="Type: ${row.units}"></td>
+                            <td><input type="text" class="excel-input-cell excel-rev" data-expected="${row.rev}" placeholder="Type: ${row.rev}"></td>
+                        </tr>
+                    `;
+                });
+
+                document.getElementById('excel-workspace-container').style.display = 'block';
+                document.getElementById('file-upload-container').style.display = 'none';
+                document.getElementById('input-container').style.display = 'none';
+                document.getElementById('excel-instruction-label').innerText = "Type / Re-enter all 20 records matching the reference data above:";
+
+            } else if(taskName.includes('Handwriting')) {
+
+                if(taskName === 'Handwriting Transcription Task') {
+                    refText.innerText = handwritingText1;
+                } else {
+                    refText.innerText = handwritingText2;
+                }
+
+                document.getElementById('excel-workspace-container').style.display = 'none';
+                document.getElementById('input-container').style.display = 'none';
+                document.getElementById('file-upload-container').style.display = 'block';
+                document.getElementById('ws-file-input').value = '';
+
+            } else {
+
+                if(taskName === 'PDF Task') {
+                    refText.innerText = pdfText1;
+                } else {
+                    refText.innerText = pdfText2;
+                }
+
+                document.getElementById('excel-workspace-container').style.display = 'none';
+                document.getElementById('file-upload-container').style.display = 'none';
+                document.getElementById('input-container').style.display = 'block';
+                document.getElementById('input-label-text').innerText = "Type the full content manually:";
+                document.getElementById('ws-input').value = '';
+                document.getElementById('ws-input').placeholder = "Type text here...";
+            }
+
+
+            switchView(
+                'workspace-view'
+            );
+        }
+
+
+        /* =========================
+           SUBMIT TASK FOR VERIFICATION
+        ========================= */
+
+        function submitTaskWork() {
+
+            let isPassed = true;
+
+            if(currentTask.name === 'Excel Data Entry' || currentTask.name === 'Heavy Excel Data Entry') {
+
+                const names =
+                    document.querySelectorAll(
+                        '.excel-name'
+                    );
+
+
+                const regions =
+                    document.querySelectorAll(
+                        '.excel-region'
+                    );
+
+
+                const units =
+                    document.querySelectorAll(
+                        '.excel-units'
+                    );
+
+
+                const revs =
+                    document.querySelectorAll(
+                        '.excel-rev'
+                    );
+
+
+                let validCount = 0;
+                let targetCount = currentTask.name === 'Excel Data Entry' ? 10 : 20;
+
+
+                for(
+                    let i = 0;
+                    i < names.length;
+                    i++
+                ) {
+
+                    if(
+
+                        names[i].value.trim().toLowerCase()
+                        ===
+                        names[i]
+                        .getAttribute('data-expected')
+                        .toLowerCase()
+
+                        &&
+
+                        regions[i].value.trim().toLowerCase()
+                        ===
+                        regions[i]
+                        .getAttribute('data-expected')
+                        .toLowerCase()
+
+                        &&
+
+                        units[i].value.trim()
+                        ===
+                        units[i]
+                        .getAttribute('data-expected')
+
+                        &&
+
+                        revs[i].value.trim()
+                        ===
+                        revs[i]
+                        .getAttribute('data-expected')
+
+                    ) {
+
+                        validCount++;
+                    }
+                }
+
+
+                if(validCount < targetCount) {
+
+                    isPassed = false;
+                }
+
+
+            } else if(
+                currentTask.name.includes('Handwriting')
+            ) {
+
+                const fileInput =
+                    document.getElementById(
+                        'ws-file-input'
+                    );
+
+
+                if(
+                    !fileInput.files ||
+                    fileInput.files.length === 0
+                ) {
+
+                    showCustomAlert('Warning', '⚠ Please select or capture a photo of your written page before submitting!', 'fa-solid fa-triangle-exclamation');
+
+                    return;
+                }
+
+                const fileName = fileInput.files[0].name.toLowerCase();
+                if(fileName.includes('fake') || fileInput.files[0].size === 0) {
+                    isPassed = false;
+                }
+
+
+            } else {
+
+                const userText =
+                    document.getElementById(
+                        'ws-input'
+                    ).value.trim();
+
+
+                if(
+                    userText.length < 20 ||
+                    !userText
+                ) {
+
+                    isPassed = false;
+                }
+            }
+
+
+            const startTime = new Date().getTime();
+            const totalDuration = 2 * 60 * 60; // 2 hours in seconds
+
+            const verificationObj = {
+
+                id: 'VT' + Math.floor(100000 + Math.random() * 900000),
+                name: currentTask.name,
+                price: currentTask.price,
+                status: 'Pending',
+                isPassed: isPassed,
+                startTime: startTime,
+                duration: totalDuration,
+                date: 'Just now'
+
+            };
+
+
+            verificationTasks.unshift(
+                verificationObj
+            );
+
+
+            persistUserDataStorage();
+
+            renderVerificationList();
+
+
+            showToast(
+                'Task submitted! Sent to Task Verification (2 Hours Timer).'
+            );
+
+
+            switchView(
+                'verification-view'
+            );
+        }
+
+
+        /* =========================
+           RENDER VERIFICATION LIST
+        ========================= */
+
+        function renderVerificationList() {
+
+            const container =
+                document.getElementById(
+                    'verification-list'
+                );
+
+
+            container.innerHTML = '';
+
+
+            if(verificationTasks.length === 0) {
+
+                container.innerHTML =
+                    '<p style="text-align:center; color:#6c757d; padding:20px;">No tasks under verification.</p>';
+
+                return;
+            }
+
+
+            verificationTasks.forEach(
+                (item, index) => {
+
+                    const div =
+                        document.createElement('div');
+
+
+                    div.className =
+                        'history-item';
+
+
+                    let badgeClass = 'badge-pending';
+                    let badgeText = 'Pending Verification';
+
+                    if(item.status === 'Success') {
+                        badgeClass = 'badge-success';
+                        badgeText = 'Verified & Credited';
+                    } else if(item.status === 'Rejected') {
+                        badgeClass = 'badge-danger';
+                        badgeText = 'Rejected (Invalid Data)';
+                    }
+
+
+                    div.innerHTML = `
+
+                        <div>
+
+                            <strong>
+                                ${item.name}
+                            </strong>
+
+                            <p style="font-size: 12px; color: #6c757d;">
+                                Reward: ₹${item.price} | Submitted: ${item.date}
+                            </p>
+
+                            <p
+                                style="font-size: 11px; color: ${item.status === 'Success' ? '#198754' : item.status === 'Rejected' ? '#dc3545' : '#dc3545'};"
+                                id="v-timer-${index}">
+                                Status: Verifying...
+                            </p>
+
+                        </div>
+
+
+                        <span
+                            class="badge ${badgeClass}"
+                            id="v-badge-${index}">
+                            ${badgeText}
+                        </span>
+
+                    `;
+
+
+                    container.appendChild(div);
+
+                    if(item.status === 'Pending') {
+                        updateVerificationTimerDisplay(index, item);
+                    }
+                }
+            );
+        }
+
+
+        /* =========================
+           TIMESTAMP ACCURATE TIMER
+        ========================= */
+
+        function updateVerificationTimerDisplay(
+            index,
+            item
+        ) {
+
+            const timerInterval = setInterval(() => {
+
+                const now = new Date().getTime();
+                const elapsedSeconds = Math.floor((now - item.startTime) / 1000);
+                let remaining = item.duration - elapsedSeconds;
+
+                const timerText = document.getElementById(`v-timer-${index}`);
+                const badge = document.getElementById(`v-badge-${index}`);
+
+                if (remaining <= 0) {
+                    clearInterval(timerInterval);
+
+                    if (item.status === 'Pending') {
+                        if (item.isPassed) {
+                            item.status = 'Success';
+                            currentUser.balance += item.price;
+
+                            if (item.name.includes('Excel')) {
+                                currentUser.breakdowns.excel += item.price;
+                            } else if (item.name.includes('Handwriting')) {
+                                currentUser.breakdowns.handwriting += item.price;
+                            } else {
+                                currentUser.breakdowns.pdf += item.price;
+                            }
+
+                            const taskObj = {
+                                name: item.name,
+                                price: item.price,
+                                date: 'Just now'
+                            };
+
+                            taskHistory.unshift(taskObj);
+                        } else {
+                            item.status = 'Rejected';
+                        }
+
+                        saveUserSession();
+                        updateUI();
+                        renderTaskHistory();
+                        renderVerificationList();
+                    }
+
+                } else {
+                    if (timerText && item.status === 'Pending') {
+                        let hours = Math.floor(remaining / 3600);
+                        let minutes = Math.floor((remaining % 3600) / 60);
+                        let seconds = remaining % 60;
+
+                        timerText.innerText = `Status: Verifying (${hours}h ${minutes}m ${seconds}s left)`;
+                    }
+                }
+
+            }, 1000);
+        }
+
+
+        /* =========================
+           TASK HISTORY
+        ========================= */
+
+        function renderTaskHistory() {
+
+            const container =
+                document.getElementById(
+                    'task-history-list'
+                );
+
+
+            container.innerHTML = '';
+
+
+            if(taskHistory.length === 0) {
+
+                container.innerHTML =
+                    '<p style="text-align:center; color:#6c757d; padding:20px;">No task history yet.</p>';
+
+                return;
+            }
+
+
+            taskHistory.forEach(
+                item => {
+
+                    const div =
+                        document.createElement('div');
+
+
+                    div.className =
+                        'history-item';
+
+
+                    div.innerHTML = `
+
+                        <div>
+
+                            <strong>
+                                ${item.name}
+                            </strong>
+
+                            <p style="font-size: 12px; color: #6c757d;">
+                                Completed: ${item.date}
+                            </p>
+
+                        </div>
+
+                        <span class="badge badge-success">
+                            +₹${item.price}
+                        </span>
+
+                    `;
+
+
+                    container.appendChild(div);
+
+                }
+            );
+        }
+
+
+        /* =========================
+           WITHDRAWAL FIELDS
+        ========================= */
+
+        function updateWithdrawalFields() {
+
+            const method =
+                document.getElementById(
+                    'pay-method'
+                ).value;
+
+
+            const container =
+                document.getElementById(
+                    'dynamic-payment-fields'
+                );
+
+
+            if(method === 'Bank Account') {
+
+                container.innerHTML = `
+
+                    <div class="form-group">
+
+                        <label>
+                            Account Holder Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="acc-name"
+                            placeholder="Enter full name as per bank">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Account Number
+                        </label>
+
+                        <input
+                            type="text"
+                            id="acc-number"
+                            placeholder="Enter account number">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            IFSC Code
+                        </label>
+
+                        <input
+                            type="text"
+                            id="acc-ifsc"
+                            placeholder="Enter bank IFSC code">
+
+                    </div>
+
+                `;
+
+            } else {
+
+                container.innerHTML = `
+
+                    <div class="form-group">
+
+                        <label>
+                            Enter UPI ID (${method})
+                        </label>
+
+                        <input
+                            type="text"
+                            id="upi-id-input"
+                            placeholder="e.g. 8860169304@paytm">
+
+                    </div>
+
+                `;
+            }
+        }
+
+
+        /* =========================
+           WITHDRAWAL REQUEST
+        ========================= */
+
+        function requestWithdrawal() {
+
+            const amt =
+                parseInt(
+                    document.getElementById(
+                        'withdraw-amount'
+                    ).value
+                );
+
+
+            const method =
+                document.getElementById(
+                    'pay-method'
+                ).value;
+
+
+            let details = '';
+
+
+            if(method === 'Bank Account') {
+
+                const accName =
+                    document.getElementById(
+                        'acc-name'
+                    ).value.trim();
+
+
+                const accNo =
+                    document.getElementById(
+                        'acc-number'
+                    ).value.trim();
+
+
+                const ifsc =
+                    document.getElementById(
+                        'acc-ifsc'
+                    ).value.trim();
+
+
+                if(
+                    !accName ||
+                    !accNo ||
+                    !ifsc
+                ) {
+
+                    showCustomAlert('Error', 'Please fill all bank account details correctly.', 'fa-solid fa-triangle-exclamation');
+
+                    return;
+                }
+
+
+                details =
+                    `A/C: ${accNo}, IFSC: ${ifsc} (${accName})`;
+
+            } else {
+
+                const upi =
+                    document.getElementById(
+                        'upi-id-input'
+                    ).value.trim();
+
+
+                if(!upi) {
+
+                    showCustomAlert('Error', 'Please enter valid UPI ID.', 'fa-solid fa-triangle-exclamation');
+
+                    return;
+                }
+
+
+                details = upi;
+            }
+
+
+            if(isNaN(amt) || amt < 1000) {
+
+                showCustomAlert('Error', 'Minimum withdrawal amount is ₹1000.', 'fa-solid fa-triangle-exclamation');
+
+                return;
+            }
+
+
+            if(amt > currentUser.balance) {
+
+                showCustomAlert('Insufficient Balance', 'Insufficient wallet balance!', 'fa-solid fa-triangle-exclamation');
+
+                return;
+            }
+
+
+            currentUser.balance -= amt;
+
+            currentUser.withdrawn += amt;
+
+
+            saveUserSession();
+
+            updateUI();
+
+
+            const startTime = new Date().getTime();
+            const totalDuration = 2 * 60 * 60; // 2 hours
+
+            const withdrawObj = {
+
+                id:
+                    'WD' +
+                    Math.floor(
+                        100000 +
+                        Math.random() * 900000
+                    ),
+
+                amount: amt,
+
+                method: method,
+
+                details: details,
+
+                status: 'Pending',
+
+                startTime: startTime,
+                duration: totalDuration
+            };
+
+
+            withdrawalHistory.unshift(
+                withdrawObj
+            );
+
+
+            persistUserDataStorage();
+
+            renderWithdrawalHistory();
+
+            switchView(
+                'withdraw-history-view'
+            );
+
+
+            showToast(
+                'Withdrawal requested successfully!'
+            );
+        }
+
+
+        /* =========================
+           WITHDRAWAL HISTORY
+        ========================= */
+
+        function renderWithdrawalHistory() {
+
+            const container =
+                document.getElementById(
+                    'withdrawal-history-list'
+                );
+
+
+            container.innerHTML = '';
+
+
+            if(
+                withdrawalHistory.length === 0
+            ) {
+
+                container.innerHTML =
+                    '<p style="text-align:center; color:#6c757d; padding:20px;">No withdrawal history yet.</p>';
+
+                return;
+            }
+
+
+            withdrawalHistory.forEach(
+                (item, index) => {
+
+                    const div =
+                        document.createElement('div');
+
+
+                    div.className =
+                        'history-item';
+
+
+                    div.innerHTML = `
+
+                        <div>
+
+                            <strong>
+                                ₹${item.amount}
+                                via ${item.method}
+                            </strong>
+
+                            <p style="font-size: 12px; color: #6c757d;">
+                                To: ${item.details}
+                            </p>
+
+                            <p
+                                style="font-size: 11px; color: #dc3545;"
+                                id="timer-${index}">
+                                Status: Pending...
+                            </p>
+
+                        </div>
+
+
+                        <span
+                            class="badge badge-pending"
+                            id="badge-${index}">
+                            Pending
+                        </span>
+
+                    `;
+
+
+                    container.appendChild(div);
+
+
+                    startAccurateWithdrawalTimer(
+                        index,
+                        item
+                    );
+                }
+            );
+        }
+
+
+        /* =========================
+           TIMESTAMP ACCURATE WITHDRAWAL TIMER
+        ========================= */
+
+        function startAccurateWithdrawalTimer(
+            index,
+            item
+        ) {
+
+            const timerInterval = setInterval(() => {
+
+                const now = new Date().getTime();
+                const elapsedSeconds = Math.floor((now - item.startTime) / 1000);
+                let remaining = item.duration - elapsedSeconds;
+
+                const badge = document.getElementById(`badge-${index}`);
+                const timerText = document.getElementById(`timer-${index}`);
+
+                if (remaining <= 0) {
+                    clearInterval(timerInterval);
+
+                    if (item.status === 'Pending') {
+                        item.status = 'Success';
+                        persistUserDataStorage();
+
+                        if (badge) {
+                            badge.className = 'badge badge-success';
+                            badge.innerText = 'Successful';
+                        }
+
+                        if (timerText) {
+                            timerText.innerText = 'Status: Payment Transferred Successfully';
+                            timerText.style.color = '#198754';
+                        }
+                    }
+
+                } else {
+                    if (timerText && item.status === 'Pending') {
+                        let hours = Math.floor(remaining / 3600);
+                        let minutes = Math.floor((remaining % 3600) / 60);
+                        let seconds = remaining % 60;
+
+                        timerText.innerText = `Status: Pending (${hours}h ${minutes}m ${seconds}s left)`;
+                    }
+                }
+
+            }, 1000);
+        }
+
+
+        /* =================================================
+           DONATION SYSTEM & MY DONATIONS
+        ================================================= */
+
+
+        function updateDonationBalance() {
+
+            const balanceElement =
+                document.getElementById(
+                    'donation-balance'
+                );
+
+
+            if(balanceElement) {
+
+                balanceElement.innerText =
+                    Number(
+                        currentUser.balance
+                    ).toFixed(2)
+                    .replace(/\.00$/, '');
+            }
+        }
+
+
+        function makeDonation() {
+
+            const donorName =
+                document.getElementById(
+                    'donation-name'
+                ).value.trim();
+
+
+            const amountInput =
+                document.getElementById(
+                    'donation-amount'
+                ).value.trim();
+
+
+            if(!donorName) {
+
+                showCustomAlert('Error', 'Please enter your name.', 'fa-solid fa-triangle-exclamation');
+
+                return;
+            }
+
+
+            if(amountInput === '') {
+
+                showCustomAlert('Error', 'Please enter donation amount.', 'fa-solid fa-triangle-exclamation');
+
+                return;
+            }
+
+
+            const amount =
+                Number(amountInput);
+
+
+            if(
+                !Number.isFinite(amount) ||
+                amount <= 0
+            ) {
+
+                showCustomAlert('Error', 'Please enter a valid donation amount greater than ₹0.', 'fa-solid fa-triangle-exclamation');
+
+                return;
+            }
+
+
+            if(
+                amount > Number(currentUser.balance)
+            ) {
+
+                showCustomAlert('Insufficient Balance', `Insufficient balance!\n\nYour available balance is ₹${currentUser.balance}.`, 'fa-solid fa-triangle-exclamation');
+
+                return;
+            }
+
+
+            currentUser.balance =
+                Number(
+                    (
+                        Number(currentUser.balance) -
+                        amount
+                    ).toFixed(2)
+                );
+
+
+            const donationObj = {
+                name: donorName,
+                amount: amount,
+                date: 'Just now'
+            };
+
+            donationHistory.unshift(donationObj);
+
+
+            saveUserSession();
+
+            updateUI();
+
+            updateDonationBalance();
+
+            renderMyDonations();
+
+
+            document.getElementById(
+                'donation-name'
+            ).value = '';
+
+
+            document.getElementById(
+                'donation-amount'
+            ).value = '';
+
+
+            showToast(
+                `❤️ Thank you ${donorName}! Donation of ₹${amount} successful.`
+            );
+
+
+            setTimeout(() => {
+
+                showCustomAlert(
+                    'Donation Successful ❤️',
+                    `Thank you, ${donorName}!\n\nYour donation of ₹${amount} has been successfully contributed for people in need.\n\nRemaining Balance: ₹${currentUser.balance}`,
+                    'fa-solid fa-hand-holding-heart'
+                );
+
+            }, 300);
+
+        }
+
+
+        function renderMyDonations() {
+
+            const container = document.getElementById('my-donations-list');
+            if(!container) return;
+
+            container.innerHTML = '';
+
+            if(donationHistory.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#6c757d; padding:20px;">No donations made yet.</p>';
+                return;
+            }
+
+            donationHistory.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerHTML = `
+                    <div>
+                        <strong>Donor: ${item.name}</strong>
+                        <p style="font-size: 12px; color: #6c757d;">Contributed on: ${item.date}</p>
+                    </div>
+                    <span class="badge badge-success">
+                        -₹${item.amount}
+                    </span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+
+        /* =================================================
+           PROMO CODES SYSTEM ("Code")
+        ================================================= */
+
+        function redeemPromoCode() {
+
+            const codeInput = document.getElementById('promo-code-input').value.trim();
+
+            if(!codeInput) {
+                showCustomAlert('Error', 'Please enter a promo code.', 'fa-solid fa-triangle-exclamation');
+                return;
+            }
+
+            if(usedPromoCodes.includes(codeInput)) {
+                showCustomAlert('Already Used', 'Code already use', 'fa-solid fa-circle-exclamation');
+                return;
+            }
+
+            let rewardAmt = 0;
+
+            if(codeInput === 'Thankyoutypesearn') {
+                rewardAmt = 500;
+            } else if(codeInput === 'typesearn1000') {
+                rewardAmt = 1000;
+            } else if(codeInput === 'ownerisfaizan') {
+                rewardAmt = 2000;
+            } else if(codeInput === 'happytoday') {
+                rewardAmt = 1500;
+            } else if(codeInput === 'enjoyingthiapp') {
+                rewardAmt = 5000;
+            } else {
+                showCustomAlert('Invalid Code', 'Invalid promo code!', 'fa-solid fa-circle-exclamation');
+                return;
+            }
+
+            // Mark as used
+            usedPromoCodes.push(codeInput);
+            currentUser.balance += rewardAmt;
+            currentUser.breakdowns.promo = (currentUser.breakdowns.promo || 0) + rewardAmt;
+
+            saveUserSession();
+            updateUI();
+
+            document.getElementById('promo-code-input').value = '';
+
+            showToast(`🎉 Code redeemed successfully! ₹${rewardAmt} added to your balance.`);
+            
+            showCustomAlert(
+                'Success!',
+                `Congratulations! You successfully redeemed the code and earned ₹${rewardAmt}!`,
+                'fa-solid fa-award'
+            );
+
+            switchView('home-view');
+        }
+
+    </script>
+
+</body>
+</html>
